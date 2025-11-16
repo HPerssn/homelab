@@ -1,0 +1,42 @@
+image:
+  repository: pihole/pihole
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+admin:
+  existingSecret: "pihole-admin-password"
+  passwordKey: "password"
+
+DNS1: "1.1.1.1"
+DNS2: "1.0.0.1"
+
+webHttp: "80"
+webHttps: "443"
+
+serviceDns:
+  type: LoadBalancer
+  port: 53
+
+serviceWeb:
+  type: LoadBalancer
+  http:
+    enabled: true
+    port: 80
+  https:
+    enabled: false
+    port: 443
+
+persistenceVolumeClaim:
+  enabled: true
+  storageClass: "local-path"
+  accessModes:
+    - ReadWriteOnce
+  size: "1Gi"
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi  
