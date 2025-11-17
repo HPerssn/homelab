@@ -1,13 +1,17 @@
-#Homelab k3s Cluster
-## Infrastructure
-- **Control Plane**: Hp Spectre x360 (i7, 16gb RAM)
-- **Worker Node**: Raspberry Pi 5 (8gb RAM)
-- **Network**: Tailscale mesh network
+# Homelab K3s Cluster
+## Infrastructure Stack
+- **MetalLB**: LoadBalancer 
+- **nginx-ingress**: Ingress controller
+- **cert-manager**: SSL certificates (Let's Encrypt)
+- **Longhorn**: Distributed persistent storage
 ## Applications
 - Pi-Hole
 - Vaultwarden
 - Ryncthing
 - Portainer
-- Nginx Proxy Manager
+## Cluster status
+- control plane: k3s-control
+- worker node: k3s-worker
+- Infrastructure: MetalLB, nginx-ingress, cert-manager, Longhorn
 ## Setup
 See docs/setup.md
