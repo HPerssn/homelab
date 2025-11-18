@@ -1,0 +1,46 @@
+# Pi-hole Configuration
+image:
+  repository: pihole/pihole
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+# Admin password from secret
+admin:
+  existingSecret: "pihole-admin-password"
+  passwordKey: "password"
+
+# DNS upstream servers
+DNS1: "1.1.1.1"
+DNS2: "1.0.0.1"
+
+# Web interface
+webHttp: "80"
+webHttps: "443"
+
+# Services
+serviceDns:
+  type: LoadBalancer
+  port: 53
+
+serviceWeb:
+  type: LoadBalancer
+  http:
+    enabled: true
+    port: 80
+
+# Persistent storage (using Longhorn)
+persistentVolumeClaim:
+  enabled: true
+  storageClass: "longhorn"
+  accessModes:
+    - ReadWriteOnce
+  size: "1Gi"
+
+# Resources
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi

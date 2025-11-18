@@ -5,3 +5,6 @@
 
 .env
 .env.local
+CONNECTION_INFO.md
+INFRASTRUCTURE.md
+service-ip.txt
