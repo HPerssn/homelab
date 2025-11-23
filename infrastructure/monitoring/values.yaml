@@ -1,0 +1,68 @@
+# Grafana
+grafana:
+  enabled: true
+  admin:
+    existingSecret: grafana-admin-secret
+    userKey: admin-user
+    passwordKey: admin-password
+
+
+  # persistence
+  persistence:
+    enabled: true
+    storageClassName: longhorn
+    size: 10Gi
+  # ingress for grafana
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+    hosts:
+      - grafana.lab.hpersson.com
+    tls:
+      - secretName: grafana-tls
+        hosts:
+          - grafana.lab.hpersson.com
+
+#Prometheus
+Prometheus:
+  PrometheusSpec:
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: longhorn
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 50Gi
+    retention: 30d
+
+    ingress:
+      enabled: true
+      ingressClassName: traefik
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+      hosts:
+        - prometheus.lab.hpersson.com
+      tls:
+        - secretName: prometheus-tls
+          hosts:
+            - prometheus.lab.hpersson.com
+alertmanager:
+  alertmanagerSpec:
+    storage:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: longhorn
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 10Gi
+kubeStateMetrics:
+  enabled: true
+
+nodeExporter:
+  enabled: true
+
+additionalServiceMonitors: []
