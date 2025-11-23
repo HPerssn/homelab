@@ -1,4 +1,0 @@
-USER-SUPPLIED VALUES:
-controller:
-  service:
-    type: LoadBalancer
