@@ -1,0 +1,16 @@
+config:
+  clients:
+    - url: http://loki:3100/loki/api/v1/push
+
+serviceMonitor:
+  enabled: true
+  labels:
+    release: prometheus
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 128Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi

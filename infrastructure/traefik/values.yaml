@@ -17,3 +17,21 @@ additionalArguments:
 providers:
   kubernetesIngress:
     enabled: true
+
+metrics:
+  prometheus:
+    enabled: true
+    entryPoint: metrics
+    addEntryPointsLabels: true
+    addRoutersLabels: true
+    addServicesLabels: true
+
+ports:
+  metrics:
+    port: 9100
+    expose: false
+    exposedPort: 9100
+    protocol: TCP
+
+additionalArguments:
+  - "--metrics.prometheus=true"
