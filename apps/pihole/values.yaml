@@ -1,34 +1,31 @@
-# Pi-hole Configuration
-image:
-  repository: pihole/pihole
-  tag: "latest"
-  pullPolicy: IfNotPresent
-
-# Admin password from secret
 admin:
-  existingSecret: "pihole-admin-password"
+  existingSecret: "pihole-password"
   passwordKey: "password"
 
-# DNS upstream servers
+timezone: "Europe/Stockholm"
+
 DNS1: "1.1.1.1"
 DNS2: "1.0.0.1"
 
-# Web interface
-webHttp: "80"
-webHttps: "443"
-
-# Services
 serviceDns:
   type: LoadBalancer
-  port: 53
 
 serviceWeb:
-  type: LoadBalancer
-  http:
-    enabled: true
-    port: 80
+  type: ClusterIP
+  port: 80
 
-# Persistent storage (using Longhorn)
+ingress:
+  enabled: true
+  ingressClassName: traefik
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  hosts:
+    - pihole.lab.hpersson.com
+  tls:
+    - secretName: pihole-tls
+      hosts:
+        - pihole.lab.hpersson.com
+
 persistentVolumeClaim:
   enabled: true
   storageClass: "longhorn"
@@ -36,7 +33,6 @@ persistentVolumeClaim:
     - ReadWriteOnce
   size: "1Gi"
 
-# Resources
 resources:
   limits:
     cpu: 500m

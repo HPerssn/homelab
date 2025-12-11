@@ -27,3 +27,4 @@
 CONNECTION_INFO.md
 INFRASTRUCTURE.md
 service-ip.txt
+apps/pihole/secret.yaml
