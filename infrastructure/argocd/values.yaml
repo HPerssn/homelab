@@ -1,0 +1,14 @@
+server:
+  ingress:
+    enabled: false
+    extraArgs:
+    - --insecure
+    ingressClassName: traefik
+    hosts:
+      - argocd.lab.hpersson.com
+    tls:
+      - secretName: argocd-tls
+        hosts:
+          - argocd.lab.hpersson.com
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
