@@ -1,0 +1,76 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pod-cleanup
+  namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: pod-cleanup
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: pod-cleanup
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pod-cleanup
+subjects:
+- kind: ServiceAccount
+  name: pod-cleanup
+  namespace: kube-system
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: cleanup-stuck-pods
+  namespace: kube-system
+spec:
+  schedule: "*/15 * * * *"  # Every 15 minutes
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: pod-cleanup
+          restartPolicy: OnFailure
+          containers:
+          - name: cleanup
+            image: bitnami/kubectl:latest
+            command:
+            - /bin/bash
+            - -c
+            - |
+              echo "Checking for stuck terminating pods..."
+              
+              # Find pods stuck in Terminating state for more than 5 minutes
+              STUCK_PODS=$(kubectl get pods --all-namespaces \
+                --field-selector status.phase=Running \
+                -o json | jq -r '.items[] | 
+                select(.metadata.deletionTimestamp != null) | 
+                select((now - (.metadata.deletionTimestamp | fromdateiso8601)) > 300) | 
+                "\(.metadata.namespace) \(.metadata.name)"')
+              
+              if [ -z "$STUCK_PODS" ]; then
+                echo "No stuck pods found."
+                exit 0
+              fi
+              
+              echo "Found stuck pods:"
+              echo "$STUCK_PODS"
+              
+              # Force delete each stuck pod
+              echo "$STUCK_PODS" | while read namespace pod; do
+                echo "Force deleting pod $pod in namespace $namespace"
+                kubectl delete pod "$pod" -n "$namespace" --force --grace-period=0 || true
+              done
+              
+              echo "Cleanup complete."
