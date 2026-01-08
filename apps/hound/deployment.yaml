@@ -1,0 +1,101 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: hound-data-pvc
+  namespace: hound
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: hound-db-secret
+  namespace: hound
+type: Opaque
+stringData:
+  POSTGRES_URL: postgres://postgres:sqlK4spar@postgres.databases.svc.cluster.local:5432/hound?sslmode=disable
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hound
+  namespace: hound
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hound
+  template:
+    metadata:
+      labels:
+        app: hound
+    spec:
+      containers:
+        - name: hound
+          image: hperssn/hound:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: hound-db-secret
+                  key: POSTGRES_URL
+          volumeMounts:
+            - name: hound-data
+              mountPath: /data
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            capabilities:
+              add: ["SYS_RESOURCE"]
+          resources:
+            limits:
+              ephemeral-storage: 1Gi
+      volumes:
+        - name: hound-data
+          persistentVolumeClaim:
+            claimName: hound-data-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hound
+  namespace: hound
+spec:
+  selector:
+    app: hound
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hound
+  namespace: hound
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: hound.lab.hpersson.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: hound
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - hound.lab.hpersson.com
+      secretName: hound-tls
