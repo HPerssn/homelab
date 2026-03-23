@@ -85,11 +85,4 @@ spec:
           command: ["ollama", "pull", "qwen3:8b"]
           env:
             - name: OLLAMA_HOST
-              value: "http://ollama:11434"
-          volumeMounts:
-            - name: ollama-data
-              mountPath: /root/.ollama
-      volumes:
-        - name: ollama-data
-          persistentVolumeClaim:
-            claimName: ollama-data
+              value: "http://ollama.ollama.svc.cluster.local:11434"
