@@ -82,7 +82,7 @@ spec:
       containers:
         - name: ollama-pull
           image: ollama/ollama:latest
-          command: ["ollama", "pull", "qwen3:8b"]
+          command: ["/bin/sh", "-c", "curl -X POST http://ollama.ollama.svc.cluster.local:11434/api/pull -d '{\"name\":\"qwen3:8b\"}'"]
           env:
             - name: OLLAMA_HOST
               value: "http://ollama.ollama.svc.cluster.local:11434"
