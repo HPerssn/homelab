@@ -32,7 +32,7 @@ spec:
         app: ollama
     spec:
       nodeSelector:
-        kubernetes.io/hostname: k3s-worker-1
+        kubernetes.io/hostname: k3s-control
       initContainers:
         - name: model-puller
           image: ollama/ollama:latest
