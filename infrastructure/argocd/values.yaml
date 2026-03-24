@@ -1,8 +1,6 @@
 server:
   ingress:
-    enabled: false
-    extraArgs:
-    - --insecure
+    enabled: true  
     ingressClassName: traefik
     hosts:
       - argocd.lab.hpersson.com
@@ -12,3 +10,8 @@ server:
           - argocd.lab.hpersson.com
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt-prod
+      traefik.ingress.kubernetes.io/router.entrypoints: websecure
+      traefik.ingress.kubernetes.io/router.tls: "true"
+  
+  extraArgs:
+    - --insecure
