@@ -54,12 +54,21 @@ spec:
             capabilities:
               add: ["SYS_RESOURCE"]
           resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
             limits:
               ephemeral-storage: 1Gi
+              cpu: 500m
+              memory: 512Mi
+
       volumes:
         - name: hound-data
           persistentVolumeClaim:
             claimName: hound-data-pvc
+      nodeSelector:
+        role: worker
+        
 ---
 apiVersion: v1
 kind: Service
