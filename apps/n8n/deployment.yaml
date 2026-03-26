@@ -32,11 +32,10 @@ spec:
             - name: DB_POSTGRESDB_USER
               value: n8n
             - name: DB_POSTGRESDB_PASSWORD
-              value: "n8nkaspar"
-              #valueFrom:
-              #secretKeyRef:
-                #name: n8n-db
-                #key: PASSWORD
+              valueFrom:
+              secretKeyRef:
+                name: n8n-db
+                key: PASSWORD
 ---
 apiVersion: v1
 kind: Service
