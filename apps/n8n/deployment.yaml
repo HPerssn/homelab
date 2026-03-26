@@ -19,13 +19,23 @@ spec:
           ports:
             - containerPort: 5678
           env:
+            - name: N8N_PORT
+              value: "5678"
             - name: DB_TYPE
               value: postgresdb
-            - name: DB_POSTGRESDB_URL
+            - name: DB_POSTGRESDB_HOST
+              value: postgres.databases.svc.cluster.local
+            - name: DB_POSTGRESDB_PORT
+              value: "5432"
+            - name: DB_POSTGRESDB_DATABASE
+              value: n8n
+            - name: DB_POSTGRESDB_USER
+              value: n8n
+            - name: DB_POSTGRESDB_PASSWORD
               valueFrom:
-                secretKeyRef:
-                  name: n8n-db
-                  key: DATABASE_URL
+              secretKeyRef:
+                name: n8n-db
+                key: PASSWORD
 ---
 apiVersion: v1
 kind: Service
