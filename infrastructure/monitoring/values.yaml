@@ -31,7 +31,7 @@ grafana:
   persistence:
     enabled: true
     storageClassName: longhorn
-    size: 10Gi
+    size: 2Gi
   # ingress for grafana
   ingress:
     enabled: true
@@ -55,8 +55,8 @@ Prometheus:
           accessModes: ["ReadWriteOnce"]
           resources:
             requests:
-              storage: 50Gi
-    retention: 30d
+              storage: 5Gi
+    retention: 7d
 
     ingress:
       enabled: true
@@ -78,7 +78,7 @@ alertmanager:
           accessModes: ["ReadWriteOnce"]
           resources:
             requests:
-              storage: 10Gi
+              storage: 2Gi
 kubeStateMetrics:
   enabled: true
 
