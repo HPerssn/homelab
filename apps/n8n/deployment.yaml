@@ -36,6 +36,11 @@ spec:
               secretKeyRef:
                 name: n8n-db
                 key: PASSWORD
+            - name: N8N_ENCRYPTION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: n8n-encryption-key
+                  key: ENCRYPTION_KEY
 ---
 apiVersion: v1
 kind: Service
