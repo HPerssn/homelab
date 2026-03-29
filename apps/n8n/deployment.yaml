@@ -41,6 +41,14 @@ spec:
                 secretKeyRef:
                   name: n8n-encryption-key
                   key: ENCRYPTION_KEY
+            - name: N8N_HOST
+              value: "n8n.lab.hpersson.com"
+            - name: N8N_PROTOCOL
+              value: "https"
+            - name: WEBHOOK_URL
+              value: "https://n8n.lab.hpersson.com/"
+            - name: N8N_EDITOR_BASE_URL
+              value: "https://n8n.lab.hpersson.com/"
 ---
 apiVersion: v1
 kind: Service
