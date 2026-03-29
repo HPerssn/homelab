@@ -12,8 +12,6 @@ spec:
     metadata:
       labels:
         app: n8n
-        nodeSelector: 
-        kubernetes.io/hostname: k3s-control
     spec:
       containers:
         - name: n8n
