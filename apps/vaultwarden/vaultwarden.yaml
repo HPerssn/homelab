@@ -49,7 +49,7 @@ spec:
     app: vaultwarden
   ports:
     - port: 80
-      targetPort: 3000
+      targetPort: 80
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
